@@ -31,7 +31,10 @@ public interface IpcCommunicator extends Closeable {
 	 * @return A communicator object that allows sending and receiving messages
 	 */
 	static IpcCommunicator create(Iterable<Path> socketPaths) {
-		Preconditions.checkArgument(socketPaths.iterator().hasNext(), "socketPaths must contain at least one element");
+		if (!socketPaths.iterator().hasNext()) {
+			LOG.warn("No socket path provided. Using LoopbackCommunicator as fallback.");
+			return new LoopbackCommunicator();
+		}
 		for (var p : socketPaths) {
 			try {
 				var attr = Files.readAttributes(p, BasicFileAttributes.class);
