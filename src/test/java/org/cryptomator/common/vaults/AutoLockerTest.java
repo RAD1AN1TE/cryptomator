@@ -69,6 +69,17 @@ public class AutoLockerTest {
 		verify(mockVault, never()).lock(false);
 	}
 
+	@Test
+	public void testDoesNotLockIfVaultAlreadyLocked() throws IOException, UnmountFailedException {
+		// Set vault as already locked
+		when(mockVault.isUnlocked()).thenReturn(false);
+
+		vaultList.add(mockVault);
+		autoLocker.tick();
+
+		verify(mockVault, never()).lock(false);
+	}
+
 
 	@Test
 	public void testDoesNotLockWhenAutoLockDisabled() throws IOException, UnmountFailedException {
@@ -83,19 +94,6 @@ public class AutoLockerTest {
 
 		verify(mockVault, never()).lock(false);
 	}
-
-	@Test
-	public void testDoesNotLockIfVaultAlreadyLocked() throws IOException, UnmountFailedException {
-		// Set vault as already locked
-		when(mockVault.isUnlocked()).thenReturn(false);
-
-		vaultList.add(mockVault);
-		autoLocker.tick();
-
-		verify(mockVault, never()).lock(false);
-	}
-
-
 
 
 	@Test
